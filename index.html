@@ -1,0 +1,371 @@
+<!DOCTYPE html PUBLIC "-//W3C//Ddiv XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/Ddiv/xhtml1-strict.ddiv">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+
+  <head>
+    <title>CS 194 PROJECT 5</title>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <link href="style.css" rel="stylesheet" />
+  </head>
+
+  <body>
+    <header>
+      <h1>CS 194-26: Intro to Computer Vision and Computational Photography, Fall 2021</h1>
+      <h1>Project 5: Facial Keypoint Detection with Neural Networks</h1>
+      <h2>By Xinyun Cao</h2>
+
+      <div class="table-of-contents">
+        <ul>
+          <li>
+            <a href="#part1">Part 1: Nose Tip Detection</a>
+          </li>
+          <li>
+            <a href="#part2">Part 2: Full Facial Keypoints Detection</a>
+          </li>
+          <li>
+            <a href="#part3">Part 3: Train With Larger Dataset</a>
+          </li>
+        </ul>
+      </div>
+      <!-- end table of contents -->
+    </header>
+    <!-- END PAGE HEADER -->
+
+    <br class="spacer" />
+
+    <!-- START PAGE CONTENT -->
+    <div class="content">
+      <div class="part" id="overview">
+        <h2>Overview</h2>
+        <!-- Give a high-level overview of what you implemented in this project. Think about what you've built as a whole.
+              Share your thoughts on what interesting things you've learned from completing the project. -->
+        <p>In this project, we trained Convolutional Neural Networks to detect facial keypoints.</p>
+      </div>
+      <!-- END OVERVIEW -->
+
+      <!--Start Part 1-->
+      <div class="part" id="part1">
+        <h2>Part 1: Nose Tip Detection</h2>
+        <p>In this part, we used a simple convolutional network to detect where the nosetip is in a picture.</p>
+        <h3>Result</h3>
+        <h4>1) Ground Truth Keypoints:</h4>
+        <div class="row">
+          <div class="column">
+            <img src="output/face1.jpg" alt="face1" style="width:100%">
+          </div>
+        </div>
+        <div class="row">
+          <div class="column">
+            <img src="output/face2.jpg" alt="face2" style="width:100%">
+          </div>
+        </div>
+
+        <h4>2) Train and Validation Loss</h4>
+        <p>I played around with several different hyper parameters, and they are plotted below.</p>
+        <h5>Version 1</h5>
+        <p>for version 1, we used CNN structure: Net(
+		  <p>(conv1): Conv2d(1, 32, kernel_size=(7, 7), stride=(1, 1))</p>
+		  <p>(conv2): Conv2d(32, 24, kernel_size=(5, 5), stride=(1, 1))</p>
+		  <p>(conv3): Conv2d(24, 32, kernel_size=(3, 3), stride=(1, 1))</p>
+		  <p>(conv4): Conv2d(32, 32, kernel_size=(5, 5), stride=(1, 1))</p>
+		  <p>(fc1): Linear(in_features=64, out_features=1000, bias=True)</p>
+		  <p>(fc2): Linear(in_features=1000, out_features=2, bias=True))</p>
+		</p>
+		<p>For hyperparameters, we used LR = 1e-3 and Epoch = 25, batchSize = 1.</p>
+        <div class="row">
+          <div class="column">
+            <img src="output/pt1_plot1.jpg" alt="pt1_plot1" style="width:100%">
+          </div>
+        </div>
+
+        <h5>Version 2</h5>
+      	<p>for version 2, we used the same CNN structure as version 1: Net(
+		  <p>(conv1): Conv2d(1, 32, kernel_size=(7, 7), stride=(1, 1))</p>
+		  <p>(conv2): Conv2d(32, 24, kernel_size=(5, 5), stride=(1, 1))</p>
+		  <p>(conv3): Conv2d(24, 32, kernel_size=(3, 3), stride=(1, 1))</p>
+		  <p>(conv4): Conv2d(32, 32, kernel_size=(5, 5), stride=(1, 1))</p>
+		  <p>(fc1): Linear(in_features=64, out_features=1000, bias=True)</p>
+		  <p>(fc2): Linear(in_features=1000, out_features=2, bias=True))</p>
+		</p>
+		<p>For hyperparameters, we used LR = 2e-3 and Epoch = 25, batchSize = 1.</p>
+		<div class="row">
+          <div class="column">
+            <img src="output/pt1_plot2.jpg" alt="pt1_plot2" style="width:100%">
+          </div>
+        </div>
+
+        <h5>Version 3</h5>
+        <p>for version 3, we used a slightly different CNN structure as version 1&2: Net(
+		  <p>(conv1): Conv2d(1, 32, kernel_size=(7, 7), stride=(1, 1))</p>
+		  <p>(conv2): Conv2d(32, 24, kernel_size=(7, 7), stride=(1, 1))</p>
+		  <p>(conv3): Conv2d(24, 32, kernel_size=(5, 5), stride=(1, 1))</p>
+		  <p>(conv4): Conv2d(32, 32, kernel_size=(3, 3), stride=(1, 1))</p>
+		  <p>(fc1): Linear(in_features=64, out_features=100, bias=True)</p>
+		  <p>(fc2): Linear(in_features=100, out_features=2, bias=True))</p>
+		</p>
+		<p>For hyperparameters, we used LR = 1e-3 and Epoch = 25, batchSize = 1.</p>
+		<div class="row">
+          <div class="column">
+            <img src="output/pt1_plot3.jpg" alt="pt1_plot3" style="width:100%">
+          </div>
+        </div>
+
+        <h5>Version 4</h5>
+        <p>for version 4, we used another CNN structure: Net(
+		  <p>(conv1): Conv2d(1, 32, kernel_size=(7, 7), stride=(1, 1))</p>
+		  <p>(conv2): Conv2d(32, 24, kernel_size=(5, 5), stride=(1, 1))</p>
+		  <p>(conv3): Conv2d(24, 24, kernel_size=(5, 5), stride=(1, 1))</p>
+		  <p>(conv4): Conv2d(24, 12, kernel_size=(3, 3), stride=(1, 1))</p>
+		  <p>(fc1): Linear(in_features=36, out_features=500, bias=True)</p>
+		  <p>(fc2): Linear(in_features=500, out_features=2, bias=True))</p>
+		</p>
+		<p>For hyperparameters, we used LR = 1e-3 and Epoch = 25, batchSize = 1.</p>
+		<div class="row">
+          <div class="column">
+            <img src="output/pt1_plot4.jpg" alt="pt1_plot4" style="width:100%">
+          </div>
+        </div>
+        <p>In the following part, I am going to show the result of the fourth version.</p>
+
+        <h4>3) Training Results</h4>
+        <h5>Correct Results</h5>
+        <p>The following are some pictures that my model predicts correctly. The green dot is the ground truth while the red dot is the prediction.</p>
+        <div class="row">
+          <div class="column">
+            <img src="output/pt1_good1.jpg" alt="pt1_good1" style="width:100%">
+          </div>
+          <div class="column">
+            <img src="output/pt1_good2.jpg" alt="pt1_good2" style="width:100%">
+          </div>
+          <div class="column">
+            <img src="output/pt1_good3.jpg" alt="pt1_good3" style="width:100%">
+          </div>
+        </div>
+
+        <h5>Incorrect Results</h5>
+        <p>The following are some pictures that my model predicts incorrectly. The green dot is the ground truth while the red dot is the prediction. I think the reason my model is not predicting these correctly is that the faces in these pictures are turning too much, and we don't have enough this kind of data to train on.</p>
+        <div class="row">
+          <div class="column">
+            <img src="output/pt1_bad1.jpg" alt="pt1_bad1" style="width:100%">
+          </div>
+          <div class="column">
+            <img src="output/pt1_bad2.jpg" alt="pt1_bad2" style="width:100%">
+          </div>
+        </div>
+
+      </div>
+      <!--End Part 1-->
+
+      <!--Start Part 2-->
+      <div class="part" id="part2">
+        <h2>Part 2: Full Facial Keypoints Detection</h2>
+        <p>In this part, we used a larger network than part one to train a model that can predict all 58 keypoints of the face.</p>
+
+        <h4>1) Sample image and ground truth</h4>
+        <p>To augment the images, I added rotation randomly between +- 10 degrees, as well as random shifting between +- 10 pixels in both x and y directions. I also changed the keypoints correspondingly. The result images with ground truth looks like:</p>
+        <div class="row">
+          <div class="column">
+            <img src="output/pt2_face1.jpg" alt="pt2_face1" style="width:100%">
+            <figcaption>Augmented face and ground truth</figcaption>
+          </div>
+        </div>
+        <div class="row">
+          <div class="column">
+            <img src="output/pt2_face2.jpg" alt="pt2_face2" style="width:100%">
+            <figcaption>More augmented face and ground truth</figcaption>
+          </div>
+        </div>
+
+        <h4>2) Detailed Architecture of the Model</h4>
+        <p>The detailed model structure is shown as follows:</p>
+        <div class="row">
+          <div class="column">
+            <img src="output/pt2_model.jpg" alt="pt2_model" style="width:100%">
+            <figcaption>The model structure used in this part</figcaption>
+          </div>
+        </div>
+        <p>The hyperparameters are LR = 5e-5, epoch = 20, batchSize = 1.</p>
+
+        <h4>3) Training and Validation loss</h4>
+        <p>As shown below is the training and validation loss in this part.</p>
+        <div class="row">
+          <div class="column">
+            <img src="output/pt2_plot.jpg" alt="pt2_plot" style="width:100%">
+          </div>
+        </div>
+
+        <h4>4) Training Results</h4>
+        <h5>Correct Results</h5>
+        <p>The following are some pictures that my model predicts correctly. The green dot is the ground truth while the red dot is the prediction.</p>
+        <div class="row">
+          <div class="column">
+            <img src="output/pt2_good1.jpg" alt="pt2_good1" style="width:100%">
+          </div>
+          <div class="column">
+            <img src="output/pt2_good2.jpg" alt="pt2_good2" style="width:100%">
+          </div>
+          <div class="column">
+            <img src="output/pt2_good3.jpg" alt="pt2_good3" style="width:100%">
+          </div>
+        </div>
+
+        <h5>Incorrect Results</h5>
+        <p>The following are some pictures that my model predicts incorrectly. The green dot is the ground truth while the red dot is the prediction. I think the reason my model is not predicting these correctly is that the faces in these pictures are either turning too much, or showing an expression not common in the training set(eg: surprised), and we don't have enough this kind of data to train on.</p>
+        <div class="row">
+          <div class="column">
+            <img src="output/pt2_bad1.jpg" alt="pt2_bad1" style="width:100%">
+          </div>
+          <div class="column">
+            <img src="output/pt2_bad2.jpg" alt="pt2_bad2" style="width:100%">
+          </div>
+        </div>
+
+        <h4>5) Learned filters</h4>
+        <p>The following is the learned filter(first convolutional layer):</p>
+        <div class="row">
+          <div class="column">
+            <img src="output/filter/0.jpg" alt="0" style="width:100%">
+          </div>
+          <div class="column">
+            <img src="output/white.jpg" alt="1" style="width:100%">
+          </div>
+          <div class="column">
+            <img src="output/filter/1.jpg" alt="1" style="width:100%">
+          </div>
+          <div class="column">
+            <img src="output/white.jpg" alt="1" style="width:100%">
+          </div>
+          <div class="column">
+            <img src="output/filter/2.jpg" alt="2" style="width:100%">
+          </div>
+          <div class="column">
+            <img src="output/white.jpg" alt="1" style="width:100%">
+          </div>
+          <div class="column">
+            <img src="output/filter/3.jpg" alt="3" style="width:100%">
+          </div>
+        </div>
+        <div class="row">
+          <div class="column">
+            <img src="output/filter/4.jpg" alt="4" style="width:100%">
+          </div>
+          <div class="column">
+            <img src="output/white.jpg" alt="1" style="width:100%">
+          </div>
+          <div class="column">
+            <img src="output/filter/5.jpg" alt="5" style="width:100%">
+          </div>
+          <div class="column">
+            <img src="output/white.jpg" alt="1" style="width:100%">
+          </div>
+          <div class="column">
+            <img src="output/filter/6.jpg" alt="6" style="width:100%">
+          </div>
+          <div class="column">
+            <img src="output/white.jpg" alt="1" style="width:100%">
+          </div>
+          <div class="column">
+            <img src="output/filter/7.jpg" alt="7" style="width:100%">
+          </div>
+        </div>
+        <div class="row">
+          <div class="column">
+            <img src="output/filter/8.jpg" alt="8" style="width:100%">
+          </div>
+          <div class="column">
+            <img src="output/white.jpg" alt="1" style="width:100%">
+          </div>
+          <div class="column">
+            <img src="output/filter/9.jpg" alt="9" style="width:100%">
+          </div>
+          <div class="column">
+            <img src="output/white.jpg" alt="1" style="width:100%">
+          </div>
+          <div class="column">
+            <img src="output/filter/10.jpg" alt="10" style="width:100%">
+          </div>
+          <div class="column">
+            <img src="output/white.jpg" alt="1" style="width:100%">
+          </div>
+          <div class="column">
+            <img src="output/filter/11.jpg" alt="11" style="width:100%">
+          </div>
+        </div>
+
+      </div>
+      <!--End Part2-->
+
+      <!--Start Part3-->
+      <div class="part" id="part3">
+        <h2>Part 3: Train With Larger Dataset</h2>
+        <p>In this part, we trained a pretrained ResNet18 on a very large dataset on Google Colab</p>
+
+        <h4>1) Kaggle Submission</h4>
+        <p>See kaggle</p>
+
+        <h4>2) Detailed Structure of model</h4>
+        <p>I took a pretrained ResNet18 and changed the first and last layer to fit our data. Specifically, I got the model by running:</p>
+        <p>resnet18 = models.resnet18(pretrained=True)</p>
+		<p>resnet18.conv1 = nn.Conv2d(1, 64, kernel_size=(7, 7), stride=(2, 2), padding=(3, 3), bias=False)</p>
+		<p>resnet18.fc = nn.Linear(in_features=512, out_features=68 * 2, bias=True)</p>
+		<p>Specifically, the structure looks like:</p>
+        <div class="row">
+          <div class="column">
+            <img src="output/pt3_structure1.jpg" alt="pt3_structure1" style="width:100%">
+          </div>
+        </div>
+        <div class="row">
+          <div class="column">
+            <img src="output/pt3_structure2.jpg" alt="pt3_structure2" style="width:100%">
+          </div>
+        </div>
+        <p>I train the model in batch size of 128. I first trained the model with 5e-5 Learning Rate for 12 epochs, then I trained the model with 2e-5 Learning Rate for 5 epochs.</p>
+
+        <h4>3) Training and Validation loss</h4>
+        <div class="row">
+          <div class="column">
+            <img src="output/pt3_plot.jpg" alt="pt3_plot" style="width:100%">
+            <figcaption>train and validation loss</figcaption>
+          </div>
+        </div>
+
+        <h4>4) Visualize Images in Testing Set</h4>
+        <p>The following are some visualization of the prediction on the testing set.</p>
+        <div class="row">
+          <div class="column">
+            <img src="output/pt3_test1.jpg" alt="pt3_test1" style="width:100%">
+          </div>
+          <div class="column">
+            <img src="output/pt3_test2.jpg" alt="pt3_test2" style="width:100%">
+          </div>
+          <div class="column">
+            <img src="output/pt3_test3.jpg" alt="pt3_test3" style="width:100%">
+          </div>
+        </div>
+
+        <h4>5) Run model on my own collection</h4>
+        <p>I tried to run the program on some of my own photos and results look like this. I realized that my model works well with frontal faces without glasses, like image 1. It works less well with face that are rotated(more than 10%) and faces that turns more than a certain threshold (for example, image2). It also works less well when my facial expression is not very common in the dataset (for example, image 3).</p>
+        <div class="row">
+          <div class="column">
+            <img src="output/pt3_my1.jpg" alt="pt3_my1" style="width:100%">
+          </div>
+          <div class="column">
+            <img src="output/pt3_my2.jpg" alt="pt3_my2" style="width:100%">
+          </div>
+          <div class="column">
+            <img src="output/pt3_my3.jpg" alt="pt3_my3" style="width:100%">
+          </div>
+        </div>
+
+      </div>
+      <!--End Part 3-->
+    </div>
+    <!-- END CONTENT -->
+
+    <hr />
+
+    <footer>
+      <a href="#">Back to top</a>
+    </footer>
+  </body>
+
+</html>
